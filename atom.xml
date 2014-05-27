@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[A code solutions log by Josh Mock.]]></title>
+  
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://joshmock.github.io/"/>
+  <updated>2014-05-27T15:54:06.793Z</updated>
+  <id>http://joshmock.github.io/</id>
+  
+  <author>
+    <name><![CDATA[Josh Mock]]></name>
+    <email><![CDATA[josh@joshmock.com]]></email>
+  </author>
+  
+  <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Boilerplate-free promises in Node]]></title>
+    <link href="http://joshmock.github.io/boilerplate-free-promises-in-node/"/>
+    <id>http://joshmock.github.io/boilerplate-free-promises-in-node/</id>
+    <published>2014-05-27T15:53:00.000Z</published>
+    <updated>2014-05-27T15:53:31.000Z</updated>
+    <content type="html"><![CDATA[<p>One of the few frustrations I’ve had as I’ve been writing more Node-based JavaScript lately is that deeply-nested code comes quickly. Async-by-default is a powerful philosophy, but callback hell is real.</p>
+<p>It’s well-established that the promise pattern helps to reduce nested code, but you still end up writing a lot of boilerplate just to handle a promise:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre><span class="keyword">var</span> Promise = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);
+
+<span class="comment">// before</span>
+<span class="function"><span class="keyword">function</span> <span class="title">renameSomething</span> <span class="params">(callback)</span> {</span>
+    fs.rename(<span class="string">'foo'</span>, <span class="string">'bar'</span>, callback);
+}
+
+<span class="comment">// after</span>
+<span class="function"><span class="keyword">function</span> <span class="title">renameSomething_promise</span> <span class="params">()</span> {</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Promise(<span class="function"><span class="keyword">function</span> <span class="params">(resolve, reject)</span> {</span>
+        fs.rename(<span class="string">'foo'</span>, <span class="string">'bar'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(err)</span> {</span>
+            <span class="keyword">if</span> (err) {
+                reject();
+            } <span class="keyword">else</span> {
+                resolve();
+            }
+        });
+    });
+}
+</pre></td></tr></table></figure>
+
+<p>Half the power of promises is that they’re chainable, so you end up writing a ton of short functions like the above, and the <code>reject</code>/<code>resolve</code> boilerplate gets old fast.</p>
+<p>Then I discovered that the <a href="https://github.com/petkaantonov/bluebird/" target="_blank">Bluebird promise implementation</a> has an excellent utility function called <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisification" target="_blank"><code>promisify</code></a>. It works on any async function that follows the Node convention of having the callback be the last argument, which takes an error as its first argument.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="keyword">var</span> Promise = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);
+
+<span class="function"><span class="keyword">function</span> <span class="title">renameSomethingPromise</span> <span class="params">()</span> {</span>
+    <span class="keyword">var</span> rename = Promise.promisify(fs.rename);
+    <span class="keyword">return</span> rename(<span class="string">'foo'</span>, <span class="string">'bar'</span>);
+}
+</pre></td></tr></table></figure>
+
+<p>This will return a new <code>Promise</code>, resolve or reject it based on the callback error argument, and pass back whatever value is returned in the following argument. All with the addition of only one line of code per async function (or less if you’re reusing promisified functions).</p>
+<p><code>Promise.promisify</code> can do more, like <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">converting an entire module</a> and resolving promises where the callback returns multiple success arguments.</p>
+<p>Node’s community leaders <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">have already stated</a> that callbacks will remain the de facto standard for asynchronous code, so this trick is bound to come in handy for a good while.</p>
+]]></content>
+    
+    
+      <category term="node" scheme="http://joshmock.github.io/tags/node/"/>
+    
+      <category term="javascript" scheme="http://joshmock.github.io/tags/javascript/"/>
+    
+      <category term="bluebird" scheme="http://joshmock.github.io/tags/bluebird/"/>
+    
+      <category term="promises" scheme="http://joshmock.github.io/tags/promises/"/>
+    
+  </entry>
+  
+</feed>

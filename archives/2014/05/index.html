@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Archives: 2014/5 | A code solutions log by Josh Mock.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pure-min.css" type="text/css">
+  <link rel="stylesheet" href="/css/biture.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+  <header id="header">
+    <div class="wrap">
+  <div class="inner">
+    <a class="brand" href="/">A code solutions log by Josh Mock.</a>
+    <a id="menu-toggle" href="#"><i class="fa fa-bars"></i></a>
+<ul class="nav-menu">
+
+</ul>
+
+<ul class="nav-menu ext-menu">
+
+
+    <li><a href="https://twitter.com/JoshMock/">twitter</a></li>
+
+
+
+    <li><a href="https://github.com/joshmock/">github</a></li>
+
+
+  <li><a class="various" href="#fbox-tagcloud">tags</a></li>
+</ul>
+</div>
+
+  </div>
+</div>
+
+<div class="tagcloud" id="fbox-tagcloud" style="margin:10px; display:none; overflow: hidden"><a href="/tags/bluebird/" style="font-size: NaNpx;">bluebird</a><a href="/tags/javascript/" style="font-size: NaNpx;">javascript</a><a href="/tags/node/" style="font-size: NaNpx;">node</a><a href="/tags/promises/" style="font-size: NaNpx;">promises</a></div>
+
+  </header>
+  <div id="main-content" class="wrap">
+  <div class="inner">
+    
+<!--<h4 class="archive-title">tag: 2014/5</h4>-->
+
+
+  
+    <article class="post">
+  <div class="pure-g-r">
+
+    <!-- article: meta -->
+    <div class="pure-u-1-12 article-meta">
+      <div class="date"><time datetime="2014-05-27T15:53:00.000Z">
+        <div class="day">27</div>
+        <div class="month">May 2014</div>
+      </time></div>
+      <div class="article-tags">
+        
+  
+    <a href='/tags/node/' class='pure-button pull-right' style='margin:3px;'>node</a>
+  
+    <a href='/tags/javascript/' class='pure-button pull-right' style='margin:3px;'>javascript</a>
+  
+    <a href='/tags/bluebird/' class='pure-button pull-right' style='margin:3px;'>bluebird</a>
+  
+    <a href='/tags/promises/' class='pure-button pull-right' style='margin:3px;'>promises</a>
+  
+
+
+      </div>
+    </div>
+
+    <!-- article: main -->
+    <div class="pure-u-11-12">
+      <header><div class="article-title">
+        
+  
+    <h1 class="title"><a href="/boilerplate-free-promises-in-node/">Boilerplate-free promises in Node</a></h1>
+  
+
+      </div></header>
+      <div class="article-entry">
+        
+          <p>One of the few frustrations I’ve had as I’ve been writing more Node-based JavaScript lately is that deeply-nested code comes quickly. Async-by-default is a powerful philosophy, but callback hell is real.</p>
+<p>It’s well-established that the promise pattern helps to reduce nested code, but you still end up writing a lot of boilerplate just to handle a promise:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre><span class="keyword">var</span> Promise = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);
+
+<span class="comment">// before</span>
+<span class="function"><span class="keyword">function</span> <span class="title">renameSomething</span> <span class="params">(callback)</span> {</span>
+    fs.rename(<span class="string">'foo'</span>, <span class="string">'bar'</span>, callback);
+}
+
+<span class="comment">// after</span>
+<span class="function"><span class="keyword">function</span> <span class="title">renameSomething_promise</span> <span class="params">()</span> {</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Promise(<span class="function"><span class="keyword">function</span> <span class="params">(resolve, reject)</span> {</span>
+        fs.rename(<span class="string">'foo'</span>, <span class="string">'bar'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(err)</span> {</span>
+            <span class="keyword">if</span> (err) {
+                reject();
+            } <span class="keyword">else</span> {
+                resolve();
+            }
+        });
+    });
+}
+</pre></td></tr></table></figure>
+
+<p>Half the power of promises is that they’re chainable, so you end up writing a ton of short functions like the above, and the <code>reject</code>/<code>resolve</code> boilerplate gets old fast.</p>
+<p>Then I discovered that the <a href="https://github.com/petkaantonov/bluebird/" target="_blank">Bluebird promise implementation</a> has an excellent utility function called <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisification" target="_blank"><code>promisify</code></a>. It works on any async function that follows the Node convention of having the callback be the last argument, which takes an error as its first argument.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="keyword">var</span> Promise = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);
+
+<span class="function"><span class="keyword">function</span> <span class="title">renameSomethingPromise</span> <span class="params">()</span> {</span>
+    <span class="keyword">var</span> rename = Promise.promisify(fs.rename);
+    <span class="keyword">return</span> rename(<span class="string">'foo'</span>, <span class="string">'bar'</span>);
+}
+</pre></td></tr></table></figure>
+
+<p>This will return a new <code>Promise</code>, resolve or reject it based on the callback error argument, and pass back whatever value is returned in the following argument. All with the addition of only one line of code per async function (or less if you’re reusing promisified functions).</p>
+<p><code>Promise.promisify</code> can do more, like <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">converting an entire module</a> and resolving promises where the callback returns multiple success arguments.</p>
+<p>Node’s community leaders <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">have already stated</a> that callbacks will remain the de facto standard for asynchronous code, so this trick is bound to come in handy for a good while.</p>
+
+        
+      </div>
+      <footer><div class="article-comment">
+        
+
+      </div></footer>
+    </div>
+  </div>
+</article>
+
+  
+
+  <div class="pure-g-r bitpager">
+  <div class="pure-u-1-12"></div>
+  <div class="pure-u-1-4">
+    
+  </div>
+  <div class="pure-u-5-12"></div>
+  <div class="pure-u-1-4">
+    
+  </div>
+</div>
+
+
+
+
+  </div>
+  </div>
+  <footer id="footer">
+    <div class="wrap">
+  <div class="inner" style="text-align: center">
+    
+    &copy; 2014 Josh Mock All Rights Reserved
+    
+
+    / <a href="https://github.com/kywk/hexo-theme-biture">biture</a> for <a href="http://zespia.tw/hexo/">hexo</a>
+    / developed by <a href="http://kywk.github.io/moco/">MooCow (kywk)</a>.
+  </div>
+</div>
+
+  </footer>
+<!-- Le javascript -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-51356710-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+<!-- Responsive menu -->
+<script>
+$(document).ready(function() {
+  $("#menu-toggle").click(function(event) {
+    event.preventDefault();
+    if ($(this).hasClass("isShow")) {
+      $("#header").css({position: "fixed"});
+      $("ul.nav-menu").hide();
+      $(this).removeClass("isShow");
+    } else {
+      $("#header").css({position: "static"});
+      $("ul.nav-menu").show();
+      $("html, body").scrollTop(0);
+      $(this).addClass("isShow");
+    }
+    return false;
+  });
+
+  $(window).resize(function() {
+    if ($(window).width() > 700) {
+      $("ul.nav-menu").removeAttr('style');
+    }
+  });
+
+});
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/package/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="/package/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<script type="text/javascript">
+(function($){
+  $(".fancybox").fancybox();
+  $(".various").fancybox({
+    maxWidth  : 800,
+    maxHeight : 600,
+    fitToView : false,
+    width   : '70%',
+    height    : '70%',
+    autoSize  : true,
+    closeClick  : false,
+    openEffect  : 'none',
+    closeEffect : 'none'
+  });
+})(jQuery);
+</script>
+
+
+</body>
+</html>
