@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://joshmock.github.io/"/>
-  <updated>2014-06-02T15:11:49.440Z</updated>
+  <updated>2014-06-02T20:05:28.268Z</updated>
   <id>http://joshmock.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://joshmock.github.io/boilerplate-free-promises-in-node/"/>
     <id>http://joshmock.github.io/boilerplate-free-promises-in-node/</id>
     <published>2014-05-27T15:53:00.000Z</published>
-    <updated>2014-06-02T15:11:39.000Z</updated>
+    <updated>2014-06-02T20:04:58.000Z</updated>
     <content type="html"><![CDATA[<p>One of the few frustrations I’ve had as I’ve been writing more Node-based JavaScript lately is that deeply-nested code comes quickly. Async-by-default is a powerful philosophy, but callback hell is real.</p>
 <p>It’s well-established that the promise pattern helps to reduce nested code, but you still end up writing a lot of boilerplate just to handle a promise:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
@@ -81,7 +81,7 @@
 <p>This will return a new <code>Promise</code>, resolve or reject it based on the callback error argument, and pass back whatever value is returned in the following argument. All with the addition of only one line of code per async function (or less if you’re reusing promisified functions).</p>
 <p><code>Promise.promisify</code> can do more, like <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">converting an entire module</a> and resolving promises where the callback returns multiple success arguments.</p>
 <p>Node’s community leaders <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">have already stated</a> that callbacks will remain the de facto standard for asynchronous code, so this trick is bound to come in handy for a good while.</p>
-<p><strong>UPDATE:</strong> It’s come to my attention, <a href="http://www.reddit.com/r/javascript/comments/26mcbb/boilerplatefree_promises_in_node/cht92kv" target="_blank">via reddit user _Blaster_Master</a>, that <code>Promise.promisify</code> has been deprecated in favor of <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank"><code>Promise.promisifyAll</code></a>, which creates new functions on a provided object rather than overwriting existing functions. Use that instead!</p>
+<p><strong>UPDATE:</strong> It’s come to my attention, <a href="http://www.reddit.com/r/javascript/comments/26mcbb/boilerplatefree_promises_in_node/cht92kv" target="_blank">via reddit user _Blaster_Master</a>, that passing an object to <code>Promise.promisify</code> (not a single function) has been deprecated in favor of <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank"><code>Promise.promisifyAll</code></a>, which creates new functions on a provided object rather than overwriting existing functions. Use that when you promisify entire modules!</p>
 ]]></content>
     
     
