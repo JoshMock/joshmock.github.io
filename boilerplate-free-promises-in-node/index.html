@@ -144,6 +144,7 @@
 <p>This will return a new <code>Promise</code>, resolve or reject it based on the callback error argument, and pass back whatever value is returned in the following argument. All with the addition of only one line of code per async function (or less if you’re reusing promisified functions).</p>
 <p><code>Promise.promisify</code> can do more, like <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">converting an entire module</a> and resolving promises where the callback returns multiple success arguments.</p>
 <p>Node’s community leaders <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank">have already stated</a> that callbacks will remain the de facto standard for asynchronous code, so this trick is bound to come in handy for a good while.</p>
+<p><strong>UPDATE:</strong> It’s come to my attention, <a href="http://www.reddit.com/r/javascript/comments/26mcbb/boilerplatefree_promises_in_node/cht92kv" target="_blank">via reddit user _Blaster_Master</a>, that <code>Promise.promisify</code> has been deprecated in favor of <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#promisepromisifyallobject-target---object" target="_blank"><code>Promise.promisifyAll</code></a>, which creates new functions on a provided object rather than overwriting existing functions. Use that instead!</p>
 
         
       </div>
